@@ -1,20 +1,53 @@
-import { createSlice } from '@reduxjs/toolkit';
-// import type { RootState } from '../../app/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Post } from '../../models/Post.modle';
+import type { RootState } from '../../app/store';
 
-// Define a type for the slice state
 interface PostState {
-    comment: string;
+    isLoading: boolean;
+    error: string;
+    posts: Array<Post>;
 }
 
-// Define the initial state using that type
 const initialState: PostState = {
-    comment: '1231232131223123',
+    isLoading: false,
+    error: '',
+    posts: [],
 };
 
 export const postSlice = createSlice({
     name: 'post',
     initialState,
-    reducers: {},
+    reducers: {
+        postsRequest: (state) => {
+            state.isLoading = true;
+        },
+        postsRequestMyPost: (state, action: PayloadAction<string>) => {
+            state.isLoading = true;
+        },
+        postsSuccess: (state, action: PayloadAction<Post[]>) => {
+            state.posts = action.payload;
+        },
+        postsMyPostSuccess: (state, action: PayloadAction<Post[]>) => {
+            state.posts = action.payload;
+        },
+        postsFail: (state, action: PayloadAction<string>) => {
+            state.error = action.payload;
+        },
+        resetState: () => ({ ...initialState }),
+    },
 });
+
+export const isLoading = (state: RootState) => state.post.isLoading;
+export const error = (state: RootState) => state.post.error;
+export const posts = (state: RootState) => state.post.posts;
+
+export const {
+    postsFail,
+    postsRequest,
+    postsSuccess,
+    resetState,
+    postsRequestMyPost,
+    postsMyPostSuccess,
+} = postSlice.actions;
 
 export const post = postSlice.reducer;

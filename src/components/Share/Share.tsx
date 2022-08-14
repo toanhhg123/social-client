@@ -1,7 +1,40 @@
 import './share.css';
-import { PermMedia, Label, Room, EmojiEmotions } from '@mui/icons-material';
+import PermMedia from '@mui/icons-material/PermMedia';
+import Label from '@mui/icons-material/Label';
+import Room from '@mui/icons-material/Room';
+import EmojiEmotions from '@mui/icons-material/EmojiEmotions';
+
+import { useState } from 'react';
+import { postStatus } from '../../api/postApi';
 
 export default function Share() {
+    const [img, setImg] = useState<string>('');
+    const [selectedFile, setSelectedFile] = useState<File>();
+    const [postContent, setPostContent] = useState('');
+
+    const handleImageChange = function (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) {
+        const fileList = e.target.files;
+
+        if (!fileList) return;
+        console.log(fileList);
+        const src = URL.createObjectURL(fileList[0]);
+        setImg(src);
+
+        setSelectedFile(fileList[0]);
+    };
+
+    const handleUploadFile = () => {
+        const formData = new FormData();
+
+        selectedFile &&
+            formData.append('postImg', selectedFile, selectedFile.name);
+        formData.append('desc', postContent);
+
+        postStatus(formData).then((data) => console.log(data));
+    };
+
     return (
         <div className="share">
             <div className="shareWrapper">
@@ -14,8 +47,14 @@ export default function Share() {
                     <input
                         placeholder="What's in your mind Safak?"
                         className="shareInput"
+                        onChange={(e) => setPostContent(e.target.value)}
                     />
                 </div>
+                {img && (
+                    <div className="share-img">
+                        <img src={img} alt="" />
+                    </div>
+                )}
                 <hr className="shareHr" />
                 <div className="shareBottom">
                     <div className="shareOptions">
@@ -24,9 +63,19 @@ export default function Share() {
                                 htmlColor="tomato"
                                 className="shareIcon"
                             />
-                            <span className="shareOptionText">
+                            <label
+                                htmlFor="file-img"
+                                className="shareOptionText"
+                                style={{ cursor: 'pointer' }}
+                            >
                                 Photo or Video
-                            </span>
+                                <input
+                                    type="file"
+                                    id="file-img"
+                                    style={{ display: 'none' }}
+                                    onChange={handleImageChange}
+                                />
+                            </label>
                         </div>
                         <div className="shareOption">
                             <Label htmlColor="blue" className="shareIcon" />
@@ -44,7 +93,9 @@ export default function Share() {
                             <span className="shareOptionText">Feelings</span>
                         </div>
                     </div>
-                    <button className="shareButton">Share</button>
+                    <button className="shareButton" onClick={handleUploadFile}>
+                        Share
+                    </button>
                 </div>
             </div>
         </div>

@@ -1,14 +1,19 @@
 import Post from '../post/Post';
 import Share from '../Share/Share';
 import './feed.css';
-import { Posts } from '../../myData';
+import { useAppDispatch, useAppSelector } from '../../app/hook';
 
-export default function Feed() {
+import { Post as IPost } from './../../models/Post.modle';
+interface Props {
+    postList: IPost[];
+}
+
+export default function Feed({ postList }: Props) {
     return (
         <div className="feed">
             <div className="feedWrapper">
                 <Share />
-                {Posts.map((p) => (
+                {postList.map((p) => (
                     <Post key={p.id} post={p} />
                 ))}
             </div>

@@ -1,6 +1,5 @@
 .share {
     width: 100%;
-    height: 170px;
     border-radius: 10px;
     -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
     box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
@@ -9,7 +8,15 @@
 .shareWrapper {
     padding: 10px;
 }
-
+.share-img {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.share-img img {
+    max-width: 300px;
+}
 .shareTop {
     display: flex;
     align-items: center;

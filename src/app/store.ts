@@ -1,21 +1,32 @@
 import { post } from './../features/post/postSlice';
 import { auth } from './../features/auth/authSlice';
-import { configureStore } from '@reduxjs/toolkit';
+import { user } from './../features/auth/userSlice';
+
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
+import RootSaga from '../saga/rootSaga';
 
-const persistConfig = {
-    key: 'auth-social',
+export const keyPersist = 'AUTH_SOCIAL_CLIENT';
+
+export const persistConfig = {
+    key: keyPersist,
     storage,
 };
 
 const persistedReducer = persistReducer(persistConfig, auth);
+const sagaMiddleware = createSagaMiddleware();
 export const rootStore = configureStore({
-    reducer: { auth: persistedReducer, post },
+    reducer: { auth: persistedReducer, post, user },
     devTools: process.env.NODE_ENV !== 'production',
-    middleware: [thunk],
+    middleware: [
+        ...getDefaultMiddleware({ thunk: true, serializableCheck: false }),
+        sagaMiddleware,
+    ],
 });
+
+sagaMiddleware.run(RootSaga);
 
 export const persistor = persistStore(rootStore);
 

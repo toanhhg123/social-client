@@ -1,8 +1,8 @@
 import { MenuItem } from '@mui/material';
 import Menu from '@mui/material/Menu';
-
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../app/hook';
+import { logout, session } from '../../features/auth/authSlice';
 
 type Props = {
     anchorEl: null | HTMLElement;
@@ -10,6 +10,8 @@ type Props = {
 };
 
 const MenuPC = ({ anchorEl, handleMenuClose }: Props) => {
+    const sessionAuth = useAppSelector(session);
+    const dispatch = useAppDispatch();
     const menuId = 'primary-search-account-menu';
     const isMenuOpen = Boolean(anchorEl);
 
@@ -33,6 +35,11 @@ const MenuPC = ({ anchorEl, handleMenuClose }: Props) => {
                 <Link to={'/profile'}>profile</Link>
             </MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem
+                onClick={() => sessionAuth && dispatch(logout(sessionAuth))}
+            >
+                logout
+            </MenuItem>
         </Menu>
     );
 };

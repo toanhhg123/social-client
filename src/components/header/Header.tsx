@@ -13,9 +13,10 @@ import Acount from './Acount';
 import MenuMobile from './MenuMobile';
 import { Button } from '@mui/material';
 import SideBar, { AppBar } from '../sidebar/SideBar';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function PrimarySearchAppBar() {
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
@@ -72,9 +73,13 @@ export default function PrimarySearchAppBar() {
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            <Link className="link-logo" to={'/home'}>
+                            <Button
+                                className="link-logo"
+                                variant="contained"
+                                onClick={() => navigate('/')}
+                            >
                                 Socical App
-                            </Link>
+                            </Button>
                         </Typography>
 
                         <Search />

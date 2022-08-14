@@ -1,12 +1,24 @@
 import './profile.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Feed from '../../components/feed/Feed';
 import Layout from '../../components/layout/Layout';
-import Rightbar from '../../rightbar/Rightbar';
+import Rightbar from '../../components/rightbar/Rightbar';
+import { useAppSelector } from '../../app/hook';
+import { userState } from '../../features/auth/userSlice';
+import { useAppDispatch } from './../../app/hook';
+import { posts, postsRequestMyPost } from '../../features/post/postSlice';
 
 type Props = {};
 
 const Profile = (props: Props) => {
+    const userInfo = useAppSelector(userState);
+    const dispatch = useAppDispatch();
+    const postList = useAppSelector(posts);
+    useEffect(() => {
+        if (userInfo?.id) {
+            dispatch(postsRequestMyPost(userInfo.id));
+        }
+    }, [dispatch, userInfo]);
     return (
         <Layout>
             <div className="profileRight">
@@ -24,14 +36,16 @@ const Profile = (props: Props) => {
                         />
                     </div>
                     <div className="profileInfo">
-                        <h4 className="profileInfoName">Safak Kocaoglu</h4>
+                        <h4 className="profileInfoName">
+                            {userInfo?.userName}
+                        </h4>
                         <span className="profileInfoDesc">
-                            Hello my friends!
+                            {userInfo?.about || 'no about'}
                         </span>
                     </div>
                 </div>
                 <div className="profileRightBottom">
-                    <Feed />
+                    <Feed postList={postList} />
                     <Rightbar profile />
                 </div>
             </div>

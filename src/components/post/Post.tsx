@@ -1,39 +1,35 @@
 import './post.css';
 import { MoreVert } from '@mui/icons-material';
-import { Post, Users } from '../../myData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Post } from '../../models/Post.modle';
+import { User } from '../../models/user.model';
+import { getUserById } from '../../api/userApi';
+import dateFormat from 'dateformat';
 
 interface Props {
     post: Post;
 }
 export default function PostCard({ post }: Props) {
-    const [like, setLike] = useState(post.like);
-    const [isLiked, setIsLiked] = useState(false);
-
-    const likeHandler = () => {
-        setLike(isLiked ? like - 1 : like + 1);
-        setIsLiked(!isLiked);
-    };
-    return (
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        getUserById(post.userId)
+            .then((user) => setUser(user))
+            .catch(() => setUser(null));
+    }, [post]);
+    return user ? (
         <div className="post">
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
                         <img
                             className="postProfileImg"
-                            src={
-                                Users.filter((u) => u.id === post?.userId)[0]
-                                    .profilePicture
-                            }
+                            src={'assets/person/2.jpeg'}
                             alt=""
                         />
-                        <span className="postUsername">
-                            {
-                                Users.filter((u) => u.id === post?.userId)[0]
-                                    .username
-                            }
+                        <span className="postUsername">{user.userName}</span>
+                        <span className="postDate">
+                            {dateFormat(post.createdAt, 'fullDate')}
                         </span>
-                        <span className="postDate">{post.date}</span>
                     </div>
                     <div className="postTopRight">
                         <MoreVert />
@@ -41,33 +37,33 @@ export default function PostCard({ post }: Props) {
                 </div>
                 <div className="postCenter">
                     <span className="postText">{post?.desc}</span>
-                    <img className="postImg" src={post.photo} alt="" />
+                    <img className="postImg" src={post.image} alt="" />
                 </div>
                 <div className="postBottom">
                     <div className="postBottomLeft">
                         <img
                             className="likeIcon"
                             src="assets/like.png"
-                            onClick={likeHandler}
                             alt=""
                         />
                         <img
                             className="likeIcon"
                             src="assets/heart.png"
-                            onClick={likeHandler}
                             alt=""
                         />
                         <span className="postLikeCounter">
-                            {like} people like it
+                            {post.likes.length} people like it
                         </span>
                     </div>
                     <div className="postBottomRight">
                         <span className="postCommentText">
-                            {post.comment} comments
+                            {post.likes.length} comments
                         </span>
                     </div>
                 </div>
             </div>
         </div>
+    ) : (
+        <></>
     );
 }
