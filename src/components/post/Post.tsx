@@ -5,17 +5,28 @@ import { Post } from '../../models/Post.modle';
 import { User } from '../../models/user.model';
 import { getUserById } from '../../api/userApi';
 import dateFormat from 'dateformat';
+import { changeLike } from '../../api/postApi';
+import { useAppDispatch } from './../../app/hook';
+import { postLikeReuquest } from '../../features/post/postSlice';
 
 interface Props {
     post: Post;
 }
 export default function PostCard({ post }: Props) {
+    const dispatch = useAppDispatch();
     const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
         getUserById(post.userId)
             .then((user) => setUser(user))
             .catch(() => setUser(null));
     }, [post]);
+
+    const handleLike = (postId: string) => {
+        console.log(postId);
+
+        dispatch(postLikeReuquest(postId));
+    };
+
     return user ? (
         <div className="post">
             <div className="postWrapper">
@@ -40,7 +51,10 @@ export default function PostCard({ post }: Props) {
                     <img className="postImg" src={post.image} alt="" />
                 </div>
                 <div className="postBottom">
-                    <div className="postBottomLeft">
+                    <div
+                        className="postBottomLeft"
+                        onClick={() => handleLike(post.id)}
+                    >
                         <img
                             className="likeIcon"
                             src="assets/like.png"
@@ -52,7 +66,10 @@ export default function PostCard({ post }: Props) {
                             alt=""
                         />
                         <span className="postLikeCounter">
-                            {post.likes.length} people like it
+                            {post.likes.length && post.likes[0] !== ''
+                                ? post.likes.length
+                                : 0}{' '}
+                            people like it
                         </span>
                     </div>
                     <div className="postBottomRight">

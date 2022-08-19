@@ -21,6 +21,21 @@ export const postSlice = createSlice({
         postsRequest: (state) => {
             state.isLoading = true;
         },
+        postLikeReuquest: (state, action: PayloadAction<string>) => {},
+        postLikeSuccess: (state, action: PayloadAction<Post>) => {
+            console.log(action.payload.id);
+
+            const index = state.posts.findIndex(
+                (p) => p.id === action.payload.id
+            );
+            if (index !== -1) state.posts[index].likes = action.payload.likes;
+        },
+        postsStatusRequest: (state, action: PayloadAction<FormData>) => {
+            state.isLoading = true;
+        },
+        postsStatusSuccess: (state, action: PayloadAction<Post>) => {
+            state.posts.unshift(action.payload);
+        },
         postsRequestMyPost: (state, action: PayloadAction<string>) => {
             state.isLoading = true;
         },
@@ -48,6 +63,10 @@ export const {
     resetState,
     postsRequestMyPost,
     postsMyPostSuccess,
+    postsStatusRequest,
+    postsStatusSuccess,
+    postLikeReuquest,
+    postLikeSuccess,
 } = postSlice.actions;
 
 export const post = postSlice.reducer;

@@ -1,10 +1,13 @@
-import { handleBreakpoints } from '@mui/system';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { getMyPost, getPosts } from '../api/postApi';
+import { changeLike, getMyPost, getPosts, postStatus } from '../api/postApi';
 import {
+    postLikeReuquest,
+    postLikeSuccess,
     postsFail,
     postsRequest,
     postsRequestMyPost,
+    postsStatusRequest,
+    postsStatusSuccess,
     postsSuccess,
     resetState,
 } from '../features/post/postSlice';
@@ -34,7 +37,29 @@ function* HandleGetMyPost(action: PayloadAction<string>) {
     }
 }
 
+function* HandlePostStatus(action: PayloadAction<FormData>) {
+    try {
+        const post: Post = yield call(() => postStatus(action.payload));
+
+        yield put(postsStatusSuccess(post));
+    } catch (error: any) {
+        yield put(postsFail(error.message));
+    }
+}
+
+function* HandlePostLike(action: PayloadAction<string>) {
+    try {
+        const post: Post = yield call(() => changeLike(action.payload));
+
+        yield put(postLikeSuccess(post));
+    } catch (error: any) {
+        yield put(postsFail(error.message));
+    }
+}
+
 export default function* PostSaga() {
     yield takeLatest(postsRequest.toString(), HandleGetPosts);
     yield takeLatest(postsRequestMyPost.toString(), HandleGetMyPost);
+    yield takeLatest(postsStatusRequest.toString(), HandlePostStatus);
+    yield takeLatest(postLikeReuquest.toString(), HandlePostLike);
 }

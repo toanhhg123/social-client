@@ -21,13 +21,21 @@ export const userSlice = createSlice({
         getUserRequest: (state) => {
             state.isLoading = true;
         },
+        updateProfileRequest: (state, action: PayloadAction<FormData>) => {},
+        updateCoverRequest: (state, action: PayloadAction<FormData>) => {},
+
         getUserSuccess: (state, action: PayloadAction<User>) => {
             state.user = action.payload;
         },
     },
 });
 
-export const { getUserSuccess, getUserRequest } = userSlice.actions;
+export const {
+    getUserSuccess,
+    getUserRequest,
+    updateProfileRequest,
+    updateCoverRequest,
+} = userSlice.actions;
 export const userState = (state: RootState) => state.user.user;
 
 export const user = userSlice.reducer;

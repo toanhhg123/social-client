@@ -54,7 +54,20 @@ export const postStatus = async (form: FormData): Promise<Post> => {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        console.log(data);
+        return data;
+    } catch (error: any) {
+        const message: string =
+            error.response?.data?.message ||
+            error.message ||
+            'error cannot be identified';
+
+        throw new Error(message);
+    }
+};
+
+export const changeLike = async (postId: string): Promise<Post> => {
+    try {
+        const { data } = await postAxios.post<Post>('/change-like', { postId });
         return data;
     } catch (error: any) {
         const message: string =

@@ -6,8 +6,11 @@ import EmojiEmotions from '@mui/icons-material/EmojiEmotions';
 
 import { useState } from 'react';
 import { postStatus } from '../../api/postApi';
+import { useAppDispatch } from './../../app/hook';
+import { postsStatusRequest } from '../../features/post/postSlice';
 
 export default function Share() {
+    const dispatch = useAppDispatch();
     const [img, setImg] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<File>();
     const [postContent, setPostContent] = useState('');
@@ -32,7 +35,9 @@ export default function Share() {
             formData.append('postImg', selectedFile, selectedFile.name);
         formData.append('desc', postContent);
 
-        postStatus(formData).then((data) => console.log(data));
+        dispatch(postsStatusRequest(formData));
+        setImg('');
+        setPostContent('');
     };
 
     return (
@@ -47,6 +52,7 @@ export default function Share() {
                     <input
                         placeholder="What's in your mind Safak?"
                         className="shareInput"
+                        value={postContent}
                         onChange={(e) => setPostContent(e.target.value)}
                     />
                 </div>

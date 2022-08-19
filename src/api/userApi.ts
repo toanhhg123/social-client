@@ -33,6 +33,43 @@ export const getMyUser = async (): Promise<User> => {
 export const getUserById = async (id: string): Promise<User> => {
     try {
         const { data } = await userAxios.get<User>('/get-user/' + id);
+
+        return data;
+    } catch (error: any) {
+        const message: string =
+            error.response?.data?.message ||
+            error.message ||
+            'error cannot be identified';
+
+        throw new Error(message);
+    }
+};
+
+export const updateCoverPicture = async (form: FormData): Promise<User> => {
+    try {
+        const { data } = await userAxios.post('/update-cover-picture', form, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return data;
+    } catch (error: any) {
+        const message: string =
+            error.response?.data?.message ||
+            error.message ||
+            'error cannot be identified';
+
+        throw new Error(message);
+    }
+};
+
+export const updateProfilePicture = async (form: FormData): Promise<User> => {
+    try {
+        const { data } = await userAxios.post('/update-profile-picture', form, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return data;
     } catch (error: any) {
         const message: string =
